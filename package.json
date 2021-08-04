@@ -1,6 +1,6 @@
 {
   "name": "strview",
-  "version": "1.2.0",
+  "version": "1.2.2",
   "description": "A JS library that can convert strings into pages",
   "main": "dist/strview.esm.js",
   "module": "dist/strview.esm.js",

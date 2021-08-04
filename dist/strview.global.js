@@ -30,9 +30,6 @@ var StrView = (function (exports) {
                 return target[key]
             },
             set: (target, key, newValue) => {
-                if (newValue === target[key]) {
-                    return
-                }
                 target[key] = newValue;
                 setTemplate(key);
                 return true;
