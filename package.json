@@ -1,9 +1,18 @@
 {
   "name": "strview",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A JS library that can convert strings into pages",
-  "main": "index.esm.js",
-  "keywords": ["strings","pages","javascript"],
+  "main": "dist/strview.esm.js",
+  "module": "dist/strview.esm.js",
+  "keywords": ["strview","strings","pages","javascript"],
   "author": "maomincoding",
-  "license": "MIT"
+  "license": "MIT",
+  "files": [
+    "dist/*.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maomincoding/strview.git"
+  },
+  "homepage": "https://github.com/maomincoding/strview#readme"
 }
