@@ -1,10 +1,10 @@
 {
   "name": "strview",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "A JS library that can convert strings into pages",
   "main": "dist/strview.esm.js",
   "module": "dist/strview.esm.js",
-  "keywords": ["strview","strings","pages","javascript"],
+  "keywords": ["strview","string","pages","javascript"],
   "author": "maomincoding",
   "license": "MIT",
   "files": [

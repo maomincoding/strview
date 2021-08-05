@@ -14,7 +14,7 @@ function createView(v) {
     _template = v.template;
     _sourceTemplate = v.template;
     _el = v.el;
-    document.querySelector(v.el).insertAdjacentHTML("beforeEnd", render());
+    document.querySelector(v.el).insertAdjacentHTML("beforeEnd", render(_template));
 }
 
 // event listeners
@@ -23,23 +23,45 @@ function eventListener(el, event, cb) {
 }
 
 // Change state
-function useState() {
+function ref() {
     return new Proxy(_data, {
         get: (target, key) => {
             return target[key]
         },
         set: (target, key, newValue) => {
             target[key] = newValue;
-            setTemplate(key);
+            setTemplate();
             return true;
         }
     })
+}
+// once
+const onceSetTemplate = once(setTemplate);
+
+// reactiveHandlers
+const reactiveHandlers = {
+    get: (target, key) => {
+        if (typeof target[key] === 'object' && target[key] !== null) {
+            return new Proxy(target[key], reactiveHandlers);
+        }
+        return Reflect.get(target, key);
+    },
+    set: (target, key, value) => {
+        Reflect.set(target, key, value);
+        onceSetTemplate();
+        return true
+    }
+}
+
+// change states
+function reactive() {
+    return new Proxy(_data, reactiveHandlers)
 }
 
 // update the view
 function setTemplate() {
     const oNode = document.querySelector(_el);
-    const nNode = toHtml(render(_sourceTemplate));
+    const nNode = toHtml(render(_sourceTemplate, true));
     compile(oNode, 'o');
     compile(nNode, 'n');
     if (_oHtml.length === _nHtml.length) {
@@ -50,69 +72,73 @@ function setTemplate() {
     }
 }
 
-// Judge text node
+// judge text node
 function isTextNode(node) {
     return node.nodeType === 3;
 }
 
-// Compile DOM
+// compile DOM
 function compile(node, type) {
-    if (type === 'o') {
-        let ochildNodes = node.childNodes;
-        Array.from(ochildNodes).forEach((item) => {
-            if (item.childNodes && item.childNodes.length) {
-                compile(item, 'o');
-            } else if (isTextNode(item) && item.textContent.trim().length !== 0) {
-                _oHtml.push(item);
-            }
-        })
-    } else if (type === 'n') {
-        let nchildNodes = node.childNodes;
-        Array.from(nchildNodes).forEach(item => {
-            if (item.childNodes && item.childNodes.length) {
-                compile(item, 'n');
-            } else if (isTextNode(item) && item.textContent.trim().length !== 0) {
-                _nHtml.push(item);
-            }
-        })
+    const childNodesArr = node.childNodes;
+    for (let index = 0; index < Array.from(childNodesArr).length; index++) {
+        const item = Array.from(childNodesArr)[index];
+        if (item.childNodes && item.childNodes.length) {
+            compile(item, type);
+        } else if (isTextNode(item) && item.textContent.trim().length !== 0) {
+            type === 'o' ? _oHtml.push(item) : _nHtml.push(item);
+        }
     }
 }
 
-// String to DOM
+// string to DOM
 function toHtml(domStr) {
     const parser = new DOMParser();
     return parser.parseFromString(domStr, "text/html");
 }
 
+// type detection
+function getType(v) {
+    return Object.prototype.toString.call(v).match(/\[object (.+?)\]/)[1].toLowerCase();
+}
+
+// The function executes once
+function once(fn) {
+    let called = false;
+    return function () {
+        if (!called) {
+            called = true
+            fn.apply(this, arguments)
+        }
+    }
+}
+
 // template engine
-function render(template) {
-    const reg = /\{(\w+)\}/;
-    if (template) {
-        if (reg.test(template)) {
-            const name = reg.exec(template)[1];
-            template = template.replace(reg, _data[name]);
-            return render(template);
+function render(template, type) {
+    const reg = /\{(.+?)\}/;;
+    if (reg.test(template)) {
+        const key = reg.exec(template)[1];
+
+        if (_data.hasOwnProperty(key)) {
+            template = template.replace(reg, _data[key]);
+        } else {
+            template = template.replace(reg, eval(`_data.${key}`));
         }
-        return template;
-    } else {
-        if (reg.test(_template)) {
-            const name = reg.exec(_template)[1];
-            _template = _template.replace(reg, _data[name]);
-            return render();
+
+        if (type) {
+            return render(template, true)
+        } else {
+            return render(template)
         }
-        return _template;
     }
 
+    return template;
 }
 
 // export
 export {
     createView,
     eventListener,
-    useState,
-    setTemplate,
-    isTextNode,
-    compile,
-    toHtml,
-    render
+    getType,
+    reactive,
+    ref
 }
