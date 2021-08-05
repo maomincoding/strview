@@ -1,20 +1,24 @@
 
 'use strict';
 
-const _nHtml = [];
-const _oHtml = [];
-let _el = null;
-let _data = null;
-let _template = null;
-let _sourceTemplate = null;
+// global object
+const globalObj = {
+    _nHtml: [],
+    _oHtml: [],
+    _el: null,
+    _data: null,
+    _template: null,
+    _sourceTemplate: null,
+    onceSetTemplate: null
+}
 
 // initialization
 function createView(v) {
-    _data = v.data;
-    _template = v.template;
-    _sourceTemplate = v.template;
-    _el = v.el;
-    document.querySelector(v.el).insertAdjacentHTML("beforeEnd", render(_template));
+    globalObj._data = v.data;
+    globalObj._template = v.template;
+    globalObj._sourceTemplate = v.template;
+    globalObj._el = v.el;
+    document.querySelector(v.el).insertAdjacentHTML("beforeEnd", render(globalObj._template));
 }
 
 // event listeners
@@ -22,9 +26,9 @@ function eventListener(el, event, cb) {
     document.querySelector(el).addEventListener(event, cb);
 }
 
-// Change state
+// processing simple values
 function ref() {
-    return new Proxy(_data, {
+    return new Proxy(globalObj._data, {
         get: (target, key) => {
             return target[key]
         },
@@ -35,8 +39,8 @@ function ref() {
         }
     })
 }
-// once
-const onceSetTemplate = once(setTemplate);
+// make it execute only once
+globalObj.onceSetTemplate = once(setTemplate);
 
 // reactiveHandlers
 const reactiveHandlers = {
@@ -48,26 +52,26 @@ const reactiveHandlers = {
     },
     set: (target, key, value) => {
         Reflect.set(target, key, value);
-        onceSetTemplate();
+        globalObj.onceSetTemplate();
         return true
     }
 }
 
-// change states
+// respond to complex objects
 function reactive() {
-    return new Proxy(_data, reactiveHandlers)
+    return new Proxy(globalObj._data, reactiveHandlers)
 }
 
 // update the view
 function setTemplate() {
-    const oNode = document.querySelector(_el);
-    const nNode = toHtml(render(_sourceTemplate, true));
+    const oNode = document.querySelector(globalObj._el);
+    const nNode = toHtml(render(globalObj._sourceTemplate, true));
     compile(oNode, 'o');
     compile(nNode, 'n');
-    if (_oHtml.length === _nHtml.length) {
-        for (let index = 0; index < _oHtml.length; index++) {
-            const element = _oHtml[index];
-            element.textContent !== _nHtml[index].textContent && (element.textContent = _nHtml[index].textContent);
+    if (globalObj._oHtml.length === globalObj._nHtml.length) {
+        for (let index = 0; index < globalObj._oHtml.length; index++) {
+            const element = globalObj._oHtml[index];
+            element.textContent !== globalObj._nHtml[index].textContent && (element.textContent = globalObj._nHtml[index].textContent);
         }
     }
 }
@@ -85,7 +89,7 @@ function compile(node, type) {
         if (item.childNodes && item.childNodes.length) {
             compile(item, type);
         } else if (isTextNode(item) && item.textContent.trim().length !== 0) {
-            type === 'o' ? _oHtml.push(item) : _nHtml.push(item);
+            type === 'o' ? globalObj._oHtml.push(item) : globalObj._nHtml.push(item);
         }
     }
 }
@@ -101,7 +105,7 @@ function getType(v) {
     return Object.prototype.toString.call(v).match(/\[object (.+?)\]/)[1].toLowerCase();
 }
 
-// The function executes once
+// the function executes once
 function once(fn) {
     let called = false;
     return function () {
@@ -118,10 +122,10 @@ function render(template, type) {
     if (reg.test(template)) {
         const key = reg.exec(template)[1];
 
-        if (_data.hasOwnProperty(key)) {
-            template = template.replace(reg, _data[key]);
+        if (globalObj._data.hasOwnProperty(key)) {
+            template = template.replace(reg, globalObj._data[key]);
         } else {
-            template = template.replace(reg, eval(`_data.${key}`));
+            template = template.replace(reg, eval(`globalObj._data.${key}`));
         }
 
         if (type) {
