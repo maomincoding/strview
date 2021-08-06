@@ -1,7 +1,7 @@
 {
   "name": "strview",
-  "version": "1.4.0",
-  "description": "A JS library that can convert strings into pages",
+  "version": "1.6.0",
+  "description": "A JS library that can convert strings into view",
   "main": "dist/strview.esm.js",
   "module": "dist/strview.esm.js",
   "keywords": ["strview","string","pages","javascript"],
