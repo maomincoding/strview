@@ -10,7 +10,7 @@ var Strview = (function (exports) {
         _template: null,
         _sourceTemplate: null,
         onceSetTemplate: null
-    }
+    };
 
     // initialization
     function createView(v) {
@@ -55,7 +55,7 @@ var Strview = (function (exports) {
             globalObj.onceSetTemplate();
             return true
         }
-    }
+    };
 
     // respond to complex objects
     function reactive() {
@@ -110,8 +110,8 @@ var Strview = (function (exports) {
         let called = false;
         return function () {
             if (!called) {
-                called = true
-                fn.apply(this, arguments)
+                called = true;
+                fn.apply(this, arguments);
             }
         }
     }

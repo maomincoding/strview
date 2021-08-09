@@ -10,7 +10,7 @@ const globalObj = {
     _template: null,
     _sourceTemplate: null,
     onceSetTemplate: null
-}
+};
 
 // initialization
 function createView(v) {
@@ -55,7 +55,7 @@ const reactiveHandlers = {
         globalObj.onceSetTemplate();
         return true
     }
-}
+};
 
 // respond to complex objects
 function reactive() {
@@ -110,7 +110,7 @@ function once(fn) {
     let called = false;
     return function () {
         if (!called) {
-            called = true
+            called = true;
             fn.apply(this, arguments)
         }
     }
