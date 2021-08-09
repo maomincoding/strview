@@ -1,4 +1,5 @@
 # strview.js
+![strview.js](https://www.maomin.club/data/strview/logo.png)
 A JS library that can convert strings into view.
 
 ## How to use?
