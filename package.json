@@ -1,6 +1,6 @@
 {
   "name": "strview",
-  "version": "1.7.3",
+  "version": "1.7.5",
   "description": "A JS library that can convert strings into view",
   "main": "dist/strview.esm.min.js",
   "module": "dist/strview.esm.js",
