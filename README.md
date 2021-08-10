@@ -38,10 +38,10 @@ If you introduce it directly in the production environment.
 </html>
 ```
 
-You can use `strviewCLI`, a scaffolding tool that will enable you to better understand and use `strview.js`. Click the link below to learn more.
+You can use `strviewApp`, a scaffolding tool that will enable you to better understand and use `strview.js`. Click the link below to learn more.
 
 ```
-https://github.com/maomincoding/strviewCLI.git
+https://github.com/maomincoding/strview-app.git
 ```
 
 ## Which dist file to use?
@@ -51,3 +51,10 @@ https://github.com/maomincoding/strviewCLI.git
 
 - `strview.global.js`
   - For direct use via `<script src="...">` in the browser. Exposes the `Strview` global.
+
+
+## License
+
+[MIT](https://opensource.org/licenses/MIT)
+
+Copyright (c) 2021-present, maomincoding
