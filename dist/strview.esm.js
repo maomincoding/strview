@@ -18,7 +18,7 @@ function createView(v) {
     globalObj._template = v.template;
     globalObj._sourceTemplate = v.template;
     globalObj._el = v.el;
-    document.querySelector(v.el).insertAdjacentHTML("beforeEnd", render(globalObj._template));
+    v.el ? document.querySelector(v.el).insertAdjacentHTML("beforeEnd", render(globalObj._template)) : console.error("Error: Please set el property!");
 }
 
 // event listeners
@@ -100,10 +100,6 @@ function toHtml(domStr) {
     return parser.parseFromString(domStr, "text/html");
 }
 
-// type detection
-function getType(v) {
-    return Object.prototype.toString.call(v).match(/\[object (.+?)\]/)[1].toLowerCase();
-}
 
 // the function executes once
 function once(fn) {
@@ -142,7 +138,6 @@ function render(template, type) {
 export {
     createView,
     eventListener,
-    getType,
     reactive,
     ref
 }
