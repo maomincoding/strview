@@ -20,7 +20,7 @@ If you introduce it directly in the production environment.
 
 <body>
     <div id="app"></div>
-    <script src="./strview.global.min.js"></script>
+    <script src="./strview.global.js"></script>
     <script>
         Strview.createView({
             el: "#app",

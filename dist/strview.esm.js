@@ -8,8 +8,7 @@ const globalObj = {
     _el: null,
     _data: null,
     _template: null,
-    _sourceTemplate: null,
-    onceSetTemplate: null
+    _sourceTemplate: null
 };
 
 // initialization
@@ -39,8 +38,6 @@ function ref() {
         }
     })
 }
-// make it execute only once
-globalObj.onceSetTemplate = once(setTemplate);
 
 // reactiveHandlers
 const reactiveHandlers = {
@@ -52,7 +49,7 @@ const reactiveHandlers = {
     },
     set: (target, key, value) => {
         Reflect.set(target, key, value);
-        globalObj.onceSetTemplate();
+        setTemplate();
         return true
     }
 };
@@ -98,18 +95,6 @@ function compile(node, type) {
 function toHtml(domStr) {
     const parser = new DOMParser();
     return parser.parseFromString(domStr, "text/html");
-}
-
-
-// the function executes once
-function once(fn) {
-    let called = false;
-    return function () {
-        if (!called) {
-            called = true;
-            fn.apply(this, arguments)
-        }
-    }
 }
 
 // template engine
