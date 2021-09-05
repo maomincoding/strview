@@ -62,7 +62,7 @@ var Strview = (function (exports) {
     // update the view
     function setTemplate() {
         const oNode = document.querySelector(globalObj._el);
-        const nNode = toHtml(render(globalObj._sourceTemplate, true));
+        const nNode = toHtml(render(globalObj._sourceTemplate));
         compile(oNode, 'o');
         compile(nNode, 'n');
         if (globalObj._oHtml.length === globalObj._nHtml.length) {
@@ -98,22 +98,16 @@ var Strview = (function (exports) {
     }
 
     // template engine
-    function render(template, type) {
-        const reg = /\{(.+?)\}/;;
+    function render(template) {
+        const reg = /\{(.+?)\}/;
         if (reg.test(template)) {
             const key = reg.exec(template)[1];
-
             if (globalObj._data.hasOwnProperty(key)) {
                 template = template.replace(reg, globalObj._data[key]);
             } else {
                 template = template.replace(reg, eval(`globalObj._data.${key}`));
             }
-
-            if (type) {
-                return render(template, true)
-            } else {
-                return render(template)
-            }
+            return render(template)
         }
 
         return template;
@@ -128,5 +122,4 @@ var Strview = (function (exports) {
     Object.defineProperty(exports, '__esModule', { value: true });
 
     return exports;
-
 }({}));
